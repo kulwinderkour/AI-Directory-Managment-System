@@ -79,7 +79,7 @@ LUMINA is a full-stack AI-powered file organization system built with modern web
 
 ## Component Architecture
 
-### Frontend Components
+### Frontend Elements 
 
 ```
 App (Router)

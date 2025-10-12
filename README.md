@@ -2,13 +2,9 @@
 
 **LUMINA** is an intelligent file organization system that uses AI to automatically categorize and structure your files into a logical hierarchy. Built with React, FastAPI, and powered by AI (Ollama or Gemini), LUMINA transforms chaotic directories into beautifully organized structures.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.11+-blue.svg)
-![Node](https://img.shields.io/badge/node-18+-green.svg)
-
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#-features)
 - [Quick Start](#-quick-start)
@@ -17,7 +13,6 @@
 - [Running the Application](#-running-the-application)
 - [AI Configuration](#-ai-configuration)
 - [Deployment](#-deployment)
-- [Troubleshooting](#-troubleshooting)
 - [Contributing](#-contributing)
 - [License](#-license)
 
