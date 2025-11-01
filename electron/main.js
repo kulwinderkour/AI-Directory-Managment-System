@@ -1,9 +1,10 @@
+//electron app
+
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
-
-let mainWindow;
+let mainWindow;   
 
 async function createWindow() {
   mainWindow = new BrowserWindow({
