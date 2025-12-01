@@ -13,7 +13,7 @@ async function createWindow() {
     minWidth: 1200,
     minHeight: 700,
     frame: false, // Custom window controls
-    backgroundColor: '#ffffff',
+    backgroundColor: '#ffffff',  //white color 
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
