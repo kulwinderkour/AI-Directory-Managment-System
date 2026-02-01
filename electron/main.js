@@ -1,9 +1,10 @@
 //electron app
 
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
+const http = require('http');
 let mainWindow;   
 
 async function createWindow() {
@@ -32,19 +33,23 @@ async function createWindow() {
   } else {
     // it will auto detect when the server is running
     try {
-      const http = require('http');
       await new Promise((resolve, reject) => {
         const req = http.get(devServerUrl, (res) => {
+          if (res.statusCode && res.statusCode >= 400) {
+            reject(new Error(`Dev server returned HTTP ${res.statusCode}`));
+            return;
+          }
+
           useDevServer = true;
           resolve();
         });
-        req.on('error', () => reject());
+        req.on('error', reject);
         req.setTimeout(1000, () => {
           req.destroy();
-          reject();
+          reject(new Error('Dev server check timed out'));
         });
       });
-    } catch (err) {
+    } catch {
       useDevServer = false;
     }
   }
@@ -52,7 +57,9 @@ async function createWindow() {
   if (useDevServer) {
     console.log('Loading from dev server:', devServerUrl);
     mainWindow.loadURL(devServerUrl);
-    mainWindow.webContents.openDevTools();
+    if (process.env.NODE_ENV === 'development') {
+      mainWindow.webContents.openDevTools();
+    }
   } else {
     console.log('Loading from production build:', distPath);
     if (fsSync.existsSync(distPath)) {
@@ -68,7 +75,10 @@ async function createWindow() {
   });
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(createWindow).catch((error) => {
+  console.error('Failed to create application window:', error);
+  app.quit();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -215,7 +225,6 @@ ipcMain.handle('undo-organization', async (event, undoLogPath) => {
 
 // Open folder in file explorer
 ipcMain.handle('open-folder', async (event, folderPath) => {
-  const { shell } = require('electron');
   const error = await shell.openPath(folderPath);
 
   if (error) {
@@ -228,10 +237,16 @@ ipcMain.handle('open-folder', async (event, folderPath) => {
 
 // Window controls
 ipcMain.on('window-minimize', () => {
-  mainWindow.minimize();
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.minimize();
+  }
 });
 
 ipcMain.on('window-maximize', () => {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    return;
+  }
+
   if (mainWindow.isMaximized()) {
     mainWindow.unmaximize();
   } else {
@@ -240,6 +255,10 @@ ipcMain.on('window-maximize', () => {
 });
 
 ipcMain.on('window-fullscreen', () => {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    return;
+  }
+
   if (mainWindow.isFullScreen()) {
     mainWindow.setFullScreen(false);
   } else {
@@ -248,5 +267,7 @@ ipcMain.on('window-fullscreen', () => {
 });
 
 ipcMain.on('window-close', () => {
-  mainWindow.close();
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.close();
+  }
 });
