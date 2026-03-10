@@ -36,10 +36,12 @@ async function createWindow() {
       await new Promise((resolve, reject) => {
         const req = http.get(devServerUrl, (res) => {
           if (res.statusCode && res.statusCode >= 400) {
+            res.resume();
             reject(new Error(`Dev server returned HTTP ${res.statusCode}`));
             return;
           }
 
+          res.resume();
           useDevServer = true;
           resolve();
         });
@@ -109,6 +111,10 @@ ipcMain.handle('select-directory', async () => {
 
 // Read directory recursively
 ipcMain.handle('read-directory', async (event, dirPath) => {
+  if (typeof dirPath !== 'string' || !dirPath.trim()) {
+    throw new TypeError('A directory path is required');
+  }
+
   const files = [];
   
   async function scanDir(currentPath, relativePath = '') {
@@ -140,6 +146,10 @@ ipcMain.handle('read-directory', async (event, dirPath) => {
 
 // Read file content
 ipcMain.handle('read-file', async (event, filePath) => {
+  if (typeof filePath !== 'string' || !filePath.trim()) {
+    throw new TypeError('A file path is required');
+  }
+
   try {
     const content = await fs.readFile(filePath, 'utf-8');
     return content;
@@ -225,6 +235,10 @@ ipcMain.handle('undo-organization', async (event, undoLogPath) => {
 
 // Open folder in file explorer
 ipcMain.handle('open-folder', async (event, folderPath) => {
+  if (typeof folderPath !== 'string' || !folderPath.trim()) {
+    return { success: false, error: 'A folder path is required' };
+  }
+
   const error = await shell.openPath(folderPath);
 
   if (error) {
