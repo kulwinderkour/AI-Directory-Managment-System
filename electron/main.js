@@ -5,7 +5,10 @@ const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const http = require('http');
-let mainWindow;   
+
+const DEV_SERVER_URL = 'http://localhost:5173';
+const DEV_SERVER_TIMEOUT_MS = 1000;
+let mainWindow;
 
 async function createWindow() {
   mainWindow = new BrowserWindow({
@@ -23,7 +26,6 @@ async function createWindow() {
   });
 
   // Load the app - try dev server first, fallback to production build
-  const devServerUrl = 'http://localhost:5173';
   const distPath = path.join(__dirname, '../client/dist/index.html');
   
   // Check if dev server is running
@@ -34,7 +36,7 @@ async function createWindow() {
     // it will auto detect when the server is running
     try {
       await new Promise((resolve, reject) => {
-        const req = http.get(devServerUrl, (res) => {
+        const req = http.get(DEV_SERVER_URL, (res) => {
           if (res.statusCode && res.statusCode >= 400) {
             res.resume();
             reject(new Error(`Dev server returned HTTP ${res.statusCode}`));
@@ -46,7 +48,7 @@ async function createWindow() {
           resolve();
         });
         req.on('error', reject);
-        req.setTimeout(1000, () => {
+        req.setTimeout(DEV_SERVER_TIMEOUT_MS, () => {
           req.destroy();
           reject(new Error('Dev server check timed out'));
         });
@@ -57,8 +59,8 @@ async function createWindow() {
   }
 
   if (useDevServer) {
-    console.log('Loading from dev server:', devServerUrl);
-    mainWindow.loadURL(devServerUrl);
+    console.log('Loading from dev server:', DEV_SERVER_URL);
+    mainWindow.loadURL(DEV_SERVER_URL);
     if (process.env.NODE_ENV === 'development') {
       mainWindow.webContents.openDevTools();
     }
@@ -68,7 +70,7 @@ async function createWindow() {
       mainWindow.loadFile(distPath);
     } else {
       console.error('Production build not found. Please run "npm run build" in the client directory first.');
-      mainWindow.loadURL(`data:text/html,<html><body style="font-family: Arial; padding: 40px; background: #1a1a1a; color: #fff;"><h1>⚠️ Build Missing</h1><p>The production build was not found.</p><p><strong>To fix this:</strong></p><ol><li>Make sure the Vite dev server is running: <code>npm run dev</code> in the client directory</li><li>Or build the production version: <code>npm run build</code> in the client directory</li></ol><p>Dev server URL: <a href="${devServerUrl}" style="color: #6366f1;">${devServerUrl}</a></p></body></html>`);
+      mainWindow.loadURL(`data:text/html,<html><body style="font-family: Arial; padding: 40px; background: #1a1a1a; color: #fff;"><h1>⚠️ Build Missing</h1><p>The production build was not found.</p><p><strong>To fix this:</strong></p><ol><li>Make sure the Vite dev server is running: <code>npm run dev</code> in the client directory</li><li>Or build the production version: <code>npm run build</code> in the client directory</li></ol><p>Dev server URL: <a href="${DEV_SERVER_URL}" style="color: #6366f1;">${DEV_SERVER_URL}</a></p></body></html>`);
     }
   }
 
@@ -132,7 +134,7 @@ ipcMain.handle('read-directory', async (event, dirPath) => {
           id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           name: entry.name,
           path: relPath,
-          fullPath: fullPath,
+          fullPath,
           type: path.extname(entry.name).slice(1).toLowerCase() || 'unknown',
           size: stats.size,
         });
