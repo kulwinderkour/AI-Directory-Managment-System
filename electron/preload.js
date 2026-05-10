@@ -1,6 +1,8 @@
+'use strict';
+
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('electron', {
+const electronApi = {
   // Directory operations
   selectDirectory: () => ipcRenderer.invoke('select-directory'),
   readDirectory: (dirPath) => ipcRenderer.invoke('read-directory', dirPath),
@@ -19,4 +21,6 @@ contextBridge.exposeInMainWorld('electron', {
   
   // Platform info
   platform: process.platform,
-});
+};
+
+contextBridge.exposeInMainWorld('electron', electronApi);

@@ -254,7 +254,7 @@ Set `AI_PROVIDER=gemini` in `server/.env`
 
 ### Development Mode
 
-#### Option 1: Run Both Servers Together
+#### Option 1: Run the Full Application Together
 
 **From project root:**
 ```bash
@@ -264,6 +264,7 @@ npm run dev
 This will start:
 - Backend API at `http://localhost:8000`
 - Frontend app at `http://localhost:5173`
+- Electron desktop window
 
 #### Option 2: Run Servers Separately
 
@@ -396,6 +397,15 @@ taskkill /PID <PID> /F
 ```bash
 cd client
 rm -rf node_modules package-lock.json
+npm install
+npm run build
+```
+
+**Windows PowerShell:**
+```powershell
+cd client
+Remove-Item -Recurse -Force node_modules
+Remove-Item package-lock.json
 npm install
 npm run build
 ```

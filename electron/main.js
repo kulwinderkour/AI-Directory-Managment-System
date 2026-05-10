@@ -77,6 +77,18 @@ async function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    console.error('Window failed to load:', {
+      errorCode,
+      errorDescription,
+      validatedURL,
+    });
+  });
+
+  mainWindow.webContents.on('render-process-gone', (event, details) => {
+    console.error('Renderer process exited:', details);
+  });
 }
 
 app.whenReady().then(createWindow).catch((error) => {
