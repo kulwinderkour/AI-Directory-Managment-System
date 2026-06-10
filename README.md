@@ -275,11 +275,20 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
+On Windows Command Prompt, activate the environment with:
+```cmd
+cd server
+venv\Scripts\activate
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
 **Terminal 2 - Frontend:**
 ```bash
 cd client
 npm run dev
 ```
+
+Keep both terminals running while using the browser or Electron app.
 
 ### Access the Application
 
