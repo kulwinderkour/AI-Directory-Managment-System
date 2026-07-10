@@ -29,7 +29,7 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "*"  # Allow all for development to fix Electron/local file issues
+        "*",  # Allow all for development to fix Electron/local file issues
     ]
     MAX_FILE_SIZE: int = 52428800  # 50MB
     MAX_FILES_PER_BATCH: int = 10000
@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     model_config = {
         "env_file": ".env",
         "case_sensitive": True,
-        "extra": "ignore"
+        "extra": "ignore",
     }
 
 

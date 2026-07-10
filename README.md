@@ -338,6 +338,10 @@ Access:
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:8000`
 
+For local development with Vite, use `http://localhost:5173` for the frontend.
+The Electron desktop window uses the same Vite development server when started
+with `npm run dev`.
+
 ---
 
 ## 🔍 Troubleshooting
@@ -359,6 +363,9 @@ pip install -r requirements.txt
 - Ensure backend is running on port 8000
 - Check `VITE_API_URL` in `client/.env`
 - Verify CORS settings in `server/config.py`
+
+If the browser shows an older frontend, stop the Vite process and start it
+again with `npm run dev` from the `client` directory.
 
 #### 3. Ollama not responding
 
