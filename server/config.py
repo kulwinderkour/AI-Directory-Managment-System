@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     # AI
     MAX_TOKENS: int = 4000
     TEMPERATURE: float = 0.7
-    EMBEDDING_BATCH_SIZE: int = 50  # Increased for faster processing
+    EMBEDDING_BATCH_SIZE: int = 50  # Number of texts processed per embedding request
 
     model_config = {
         "env_file": ".env",

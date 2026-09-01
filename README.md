@@ -331,12 +331,15 @@ Set environment variables in Railway dashboard:
 
 ```bash
 # Build and run with Docker Compose
-docker-compose up --build
+docker compose up --build
 ```
 
 Access:
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:8000`
+
+The Docker backend expects Ollama to be available on the host machine at
+`http://localhost:11434`. Start Ollama before using AI organization features.
 
 For local development with Vite, use `http://localhost:5173` for the frontend.
 The Electron desktop window uses the same Vite development server when started
