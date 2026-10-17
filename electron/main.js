@@ -30,7 +30,7 @@ async function createWindow() {
   if (process.env.NODE_ENV === 'development') {
     useDevServer = true;
   } else {
-    // Auto-detect if dev server is running
+    // it will auto detect when the server is running
     try {
       const http = require('http');
       await new Promise((resolve, reject) => {
