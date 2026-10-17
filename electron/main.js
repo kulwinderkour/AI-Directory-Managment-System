@@ -216,7 +216,14 @@ ipcMain.handle('undo-organization', async (event, undoLogPath) => {
 // Open folder in file explorer
 ipcMain.handle('open-folder', async (event, folderPath) => {
   const { shell } = require('electron');
-  await shell.openPath(folderPath);
+  const error = await shell.openPath(folderPath);
+
+  if (error) {
+    console.error('Error opening folder:', error);
+    return { success: false, error };
+  }
+
+  return { success: true };
 });
 
 // Window controls
